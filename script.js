@@ -1,4 +1,4 @@
-const API_URL = 'http://sgs.sputnik.ru'
+const API_URL = 'https://sgs.sputnik.ru'
 const STORE = new Vuex.Store({
   state: {
     data: []
@@ -40,17 +40,27 @@ const C_INPUT = {
       default: ''
     }
   },
+  data () {
+    return {
+      inputValue: ''
+    }
+  },
   computed: {
     buttonClearVisible () {
-      return !!this.value
+      return !!this.inputValue
+    },
+    inputValueComputed () {
+      return this.value || this.inputValue
     }
   },
   methods: {
     onInput (event) {
       this.$emit('update:value', event.target.value)
+      this.inputValue = event.target.value
     },
     onClear () {
       this.$emit('update:value', '')
+      this.inputValue = ''
     },
     onFocus (event) {
       this.$emit('input_focus', event)
@@ -61,7 +71,7 @@ const C_INPUT = {
       <input
         class="c-input__field"
         :placeholder="hint"
-        :value="value"
+        :value="inputValueComputed"
         @input="onInput"
         @focus="onFocus"
       />
@@ -229,6 +239,7 @@ Vue.directive('click-outside', {
     el.__vueClickOutside__ = null
   }
 })
+
 Vue.filter('highlight', (word, query) => {
   let formattedValue = query.split(' ')
   formattedValue = formattedValue[formattedValue.length - 1]
@@ -237,16 +248,28 @@ Vue.filter('highlight', (word, query) => {
     return word.replace(new RegExp(newQuery, 'g'), '<b>' + formattedValue + '</b>')
   }
 })
+
 Vue.use(vueJsonp)
 
 new Vue({
   el: '#app',
   store: STORE,
   components: {
+    cInput: C_INPUT,
+    cDropdown: C_DROPDOWN,
     cSuggest: C_SUGGEST
   },
   template: `
     <div class="app">
-      <c-suggest input-hint="Введите название региона" class="test-suggest"></c-suggest>
+      <c-input hint="Input component" class="example" />
+      <br/>
+      <c-dropdown class="example">
+        <span slot="caller">Dropdown component</span>
+        <div slot="content">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ex porro praesentium repudiandae.
+         Aliquam consequuntur distinctio exercitationem labore laborum. Amet dolorum, nobis odit quas quidem voluptatem!
+         Aliquam blanditiis molestiae obcaecati quia?</div>
+      </c-dropdown>
+      <br/>
+      <c-suggest input-hint="Suggest component" class="example" />
     </div>`
 })
