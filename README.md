@@ -1,3 +1,3 @@
 # vue-suggest-component
 
-Пример реализации компонента Suggest из двух компоненотов Input и Dropdown
+Пример реализации компоненты Suggest из двух компоненот Input и Dropdown
